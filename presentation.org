@@ -1,0 +1,435 @@
+#    -*- mode: org -*-
+#+OPTIONS: reveal_center:t reveal_progress:t reveal_history:t reveal_control:nil
+#+OPTIONS: reveal_rolling_links:nil reveal_keyboard:t reveal_overview:t num:nil
+#+OPTIONS: reveal_width:1200 reveal_height:900
+#+OPTIONS: toc:nil reveal_slide_number:"c/t"
+#+REVEAL_MARGIN: 0.1
+#+REVEAL_MIN_SCALE: 0.5
+#+REVEAL_MAX_SCALE: 2.5
+#+REVEAL_TRANS: default
+#+REVEAL_THEME: solarized
+#+REVEAL_HLEVEL: 1
+#+REVEAL_EXTRA_CSS: ./presentation.css
+#+REVEAL_ROOT: ../../reveal.js/
+
+# (setq org-reveal-title-slide-template "<h1>%t</h1><h2>%a</h2><h3>%e / <a href=\"http://twitter.com/ben_deane\">@ben_deane</a></h3><h2>%d</h2>")
+
+#+TITLE: Using Types Effectively
+#+AUTHOR: Ben Deane
+#+EMAIL: bdeane@blizzard.com
+#+DATE: Sometime 2016
+
+* What does that mean?
+#+REVEAL_HTML: </br>
+The recent evolution of C++ is (from one point of view) largely about
+*strengthening* and *expanding* the *capabilities for dealing with types*.
+
+#+ATTR_REVEAL: :frag (appear)
+ - huge expansion of ~type_traits~
+ - ~decltype~ to utter types
+ - ~auto~ to preserve types, prevent conversions, infer return types
+ - ~nullptr~ to prevent ~int~ / ~pointer~ confusion
+ - scoped ~enum~
+ - Concepts TS
+ - ~std::variant~
+ - GSL: ~owner<T>~, ~not_null<T>~
+
+#+BEGIN_NOTES
+Some of the features added to modern C++ to deal with types.
+
+Obviously someone thinks that types are important. And the ability to wrangle
+them and mould them to our purposes is an important part of C++.
+
+Types are the currency of metaprogramming, but also important for safety in
+"regular" programming; hence we see things like the GSL's owner<> and not_null<>.
+#+END_NOTES
+
+* FP isn't (only) about
+#+REVEAL_HTML: </br>
+#+ATTR_REVEAL: :frag (appear)
+ - first class functions
+ - higher order functions
+ - lexical scoping, closures
+ - pattern matching
+ - value semantics
+ - immutability
+ - concurrency through immutability
+ - laziness
+ - garbage collection
+ - boxed data types / "inefficient" runtime models
+
+#+BEGIN_NOTES
+Functional languages can teach us a thing or two about types. (After all, they
+seem to be teaching us everything else.)
+
+Here are some things you may think of when functional programming is mentioned...
+#+END_NOTES
+
+* FP is (also, importantly) about
+#+REVEAL_HTML: </br>
+#+ATTR_REVEAL: :frag (appear)
+ - using types effectively and expressively
+ - making illegal states unrepresentable
+ - total functions
+
+#+BEGIN_NOTES
+This aspect of functional programming is often overlooked.
+
+Many functional languages have well-developed, expressive type systems.
+
+C++ is moving in that direction.
+#+END_NOTES
+
+* Why does C++ have a type system?
+#+REVEAL_HTML: </br>
+#+ATTR_REVEAL: :frag (appear appear appear appear) :frag_idx (1 2 3 4)
+ - to help programmers?
+ - to hinder programmers?
+ - because objects?
+ - for the compiler's benefit?
+#+REVEAL_HTML: </br></br>
+#+ATTR_REVEAL: :frag appear :frag_idx 5
+What has a type system ever done for us?
+#+REVEAL_HTML: <small>
+#+ATTR_REVEAL: :frag appear :frag_idx 5
+(...apart from the sanitation, the medicine, education, wine, public order,
+irrigation, roads, the fresh-water system, and public health...)
+#+REVEAL_HTML: </small>
+
+#+BEGIN_NOTES
+C++ has a stronger type system than C. Why?
+
+Is it so the compiler can complain about signed/unsigned comparisons?
+#+END_NOTES
+
+* Why does C have a type system?
+#+REVEAL_HTML: </br><div align="left">
+"The machines on which we first used BCPL and then B were word-addressed, and
+these languages' single data type, the 'cell,' comfortably equated with the
+hardware machine word. The advent of the PDP-11 exposed several inadequacies of
+B's semantic model.
+
+First, its character-handling mechanisms were clumsy. Second, although the
+original PDP-11 did not provide for floating-point arithmetic, the manufacturer
+promised that it would soon be available. Finally, the B and BCPL model implied
+overhead in dealing with pointers.
+
+For all these reasons, it seemed that a typing scheme was necessary. Other
+issues, particularly type safety and interface checking, did not seem as
+important then as they became later."
+
+#+REVEAL_HTML: </div><div align="right">
+-- dmr, [[https://www.bell-labs.com/usr/dmr/www/chist.html][/The Development of the C Language/]]
+#+REVEAL_HTML: </div>
+
+#+BEGIN_NOTES
+The PDP-11 was the new hotness.
+
+It could operate on (8-bit) bytes and (16-bit) words. If your language only
+operates on words ('cells'), string/char handling is awkward.
+
+In B, pointers were indices into arrays rather than naked addresses. So scale
+conversion would be needed at runtime.
+
+DEC promised floating point capability in hardware! So the C compiler would need
+to know about types in order to output the correct instructions.
+#+END_NOTES
+
+* What is a type?
+#+REVEAL_HTML: </br>
+#+ATTR_REVEAL: :frag (appear)
+ - A way for the compiler to know what opcodes to output (dmr's motivation)?
+ - The way data is stored (representational)?
+ - Characterised by what operations are possible (behavioural)?
+ - Determines the values that can be assigned?
+ - Determines the meaning of the data?
+
+#+BEGIN_NOTES
+
+#+END_NOTES
+
+* What is a type?
+#+REVEAL_HTML: </br>
+#+ATTR_REVEAL: :frag (appear)
+ - The set of values that can inhabit an expression
+   - may be finite or "infinite"
+   - characterized by cardinality
+ - Expressions have types
+   - A program has a type
+
+#+BEGIN_NOTES
+
+#+END_NOTES
+
+* Let's play a game
+#+ATTR_REVEAL: :frag appear
+To help us get thinking about types.
+
+#+ATTR_REVEAL: :frag appear
+I'll tell you a type.
+
+#+ATTR_REVEAL: :frag appear
+You tell me how many values it has.
+
+* Level 1
+
+* Level 1
+How many values?
+#+BEGIN_SRC cpp
+bool;
+#+END_SRC
+
+#+ATTR_REVEAL: :frag appear
+2 (~true~ and ~false~)
+
+* Level 1
+How many values?
+#+BEGIN_SRC cpp
+char;
+#+END_SRC
+
+#+ATTR_REVEAL: :frag appear
+256
+
+* Level 1
+How many values?
+#+BEGIN_SRC cpp
+void;
+#+END_SRC
+
+#+ATTR_REVEAL: :frag appear
+0
+
+#+ATTR_REVEAL: :frag appear
+#+BEGIN_SRC cpp
+struct Foo { Foo() = delete; };
+#+END_SRC
+
+#+BEGIN_NOTES
+cf BASIC's function vs procedure
+#+END_NOTES
+
+* Level 1
+How many values?
+#+BEGIN_SRC cpp
+struct Foo {};
+#+END_SRC
+
+#+ATTR_REVEAL: :frag appear
+1
+
+* Level 1
+How many values?
+#+BEGIN_SRC cpp
+enum class FireSwampDangers {
+  FLAME_SPURTS,
+  LIGHTNING_SAND,
+  ROUSES
+};
+#+END_SRC
+
+#+ATTR_REVEAL: :frag appear
+3
+
+* Level 1
+How many values?
+#+BEGIN_SRC cpp
+template <class T>
+struct Foo {
+  T m_t;
+};
+#+END_SRC
+
+#+ATTR_REVEAL: :frag appear
+~Foo~ has as many values as ~T~
+
+* End of Level 1
+Algebraically, a type is the number of values that inhabit it.
+
+These types are equivalent:
+#+BEGIN_SRC cpp
+bool;
+
+enum class Foo
+{
+  BAR,
+  BAZ
+};
+#+END_SRC
+
+#+ATTR_REVEAL: :frag appear
+Let's move on to level 2.
+
+* Level 2
+
+* Level 2
+How many values?
+#+BEGIN_SRC cpp
+std::pair<char, bool>;
+#+END_SRC
+
+#+ATTR_REVEAL: :frag appear
+256 * 2 = 512
+
+* Level 2
+How many values?
+#+BEGIN_SRC cpp
+struct Foo {
+  char a;
+  bool b;
+};
+#+END_SRC
+
+#+ATTR_REVEAL: :frag appear
+256 * 2 = 512
+
+* Level 2
+How many values?
+#+BEGIN_SRC cpp
+tuple<bool, bool, bool>;
+#+END_SRC
+
+#+ATTR_REVEAL: :frag appear
+2 * 2 * 2 = 8
+
+* Level 2
+How many values?
+#+BEGIN_SRC cpp
+template <class T, class U>
+struct Foo {
+  T m_t;
+  U m_u;
+};
+#+END_SRC
+
+#+ATTR_REVEAL: :frag appear
+(# of values in ~T~) * (# of values in ~U~)
+
+* End of Level 2
+When two types are "concatenated" into one compound type, we _multiply_ the # of
+inhabitants of the components.
+
+This kind of compounding gives us a _product type_.
+
+#+ATTR_REVEAL: :frag appear
+On to Level 3.
+
+* Level 3
+
+* Level 3
+How many values?
+#+BEGIN_SRC cpp
+std::optional<char>;
+#+END_SRC
+
+#+ATTR_REVEAL: :frag appear
+256 + 1 = 257
+
+* Level 3
+How many values?
+#+BEGIN_SRC cpp
+std::variant<char, bool>;
+#+END_SRC
+
+#+ATTR_REVEAL: :frag appear
+256 + 2 = 258
+
+* Level 3
+How many values?
+#+BEGIN_SRC cpp
+template <class T, class U>
+struct Foo {
+  std::variant<T, U>;
+}
+#+END_SRC
+
+#+ATTR_REVEAL: :frag appear
+(# of values in ~T~) + (# of values in ~U~)
+
+* End of Level 3
+When two types are "alternated" into one compound type, we _add_ the # of
+inhabitants of the components.
+
+This kind of compounding gives us a _sum type_.
+
+* Equivalences
+#+BEGIN_SRC cpp
+template <class T>
+struct Foo {
+  std::variant<T, T> m_v;
+};
+
+template <class T>
+struct Bar {
+  T m_t;
+  bool m_b;
+};
+#+END_SRC
+
+We have a choice over how to represent values. ~std::variant~ will quickly
+become a very important tool for proper expression of states.
+
+(This is one reason why it's important that ~std::variant~ can't be empty.)
+
+* Algebraic Datatypes
+This is what it means to have an algebra of datatypes.
+
+#+ATTR_REVEAL: :frag (appear)
+ - the ability to manipulate types with confidence
+ - to find equivalent formulations
+   - more natural
+   - more easily understood
+   - more efficient
+ - to identify mismatches between state spaces and the types used to implement
+   them
+ - to eliminate illegal states by making them inexpressible
+
+#+ATTR_REVEAL: :frag appear
+~std::variant~ has been a long time coming: this is why it will be so important.
+
+* A Taste of Algebra with Datatypes
+How many values?
+#+BEGIN_SRC cpp
+template <typename T>
+class vector<T>;
+#+END_SRC
+
+#+ATTR_REVEAL: :frag appear
+We can define a ~vector<T>~ recursively:
+
+#+ATTR_REVEAL: :frag appear
+${v(t)} = {1 + t v(t)}$
+
+#+ATTR_REVEAL: :frag appear
+(empty vector or head element * tail vector)
+
+* A Taste of Algebra with Datatypes
+And rearrange...
+
+${v(t)} = {1 + t v(t)}$
+#+ATTR_REVEAL: :frag appear
+${v(t) - t v(t)} = {1}$
+#+ATTR_REVEAL: :frag appear
+${v(t) (1-t)} = {1}$
+#+ATTR_REVEAL: :frag appear
+${v(t)} = {{1} \over {1-t}}$
+
+#+ATTR_REVEAL: :frag appear
+What does that mean? Subtracting and dividing types?
+
+* A Taste of Algebra with Datatypes
+When we don't know how to interpret something mathematical?
+
+${v(t)} = {{1} \over {1-t}}$
+
+#+REVEAL_HTML: Let's <a href="http://www.wolframalpha.com/input/?i=1/(1-t)" data-preview-link>ask Wolfram Alpha</a>.
+
+* A Taste of Algebra with Datatypes
+A ~vector<T>~ can have:
+#+ATTR_REVEAL: :frag (appear)
+ - 0 elements (${1}$)
+ - or (+) 1 element (${t}$)
+ - or (+) 2 elements (${t^2}$)
+ - etc.
+
+* Making Illegal States Unrepresentable

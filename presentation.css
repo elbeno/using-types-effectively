@@ -1,0 +1,35 @@
+@font-face {
+    font-family: "Inconsolata";
+    font-style: normal;
+    font-weight: normal;
+    src: local("Inconsolata"), url("http://themes.googleusercontent.com/static/fonts/inconsolata/v3/BjAYBlHtW3CJxDcjzrnZCIbN6UDyHWBl620a-IRfuBk.woff") format("woff");
+}
+
+.reveal code {
+    font-family: Inconsolata;
+}
+
+.reveal pre {
+    font-family: Inconsolata;
+    font-size: 30px;
+}
+
+#fiveup code {
+    font-family: Inconsolata;
+    font-size: 20px;
+}
+
+#columns ul {
+  width:1300px;
+  overflow:hidden;
+}
+#columns li {
+  float:left;
+  display:inline;
+}
+
+#double li  { width:50%; }
+#triple li  { width:33.333%; }
+#fourup li  { width:25%; }
+#fiveup li  { width:20%; }
+#sixup li   { width:16.666%; }
