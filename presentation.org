@@ -6,11 +6,11 @@
 #+REVEAL_MARGIN: 0.1
 #+REVEAL_MIN_SCALE: 0.5
 #+REVEAL_MAX_SCALE: 2.5
-#+REVEAL_TRANS: default
+#+REVEAL_TRANS: none
 #+REVEAL_THEME: solarized
 #+REVEAL_HLEVEL: 1
 #+REVEAL_EXTRA_CSS: ./presentation.css
-#+REVEAL_ROOT: ../../reveal.js/
+#+REVEAL_ROOT: ../reveal.js/
 
 # (setq org-reveal-title-slide-template "<h1>%t</h1><h2>%a</h2><h3>%e / <a href=\"http://twitter.com/ben_deane\">@ben_deane</a></h3><h2>%d</h2>")
 
@@ -19,20 +19,21 @@
 #+EMAIL: bdeane@blizzard.com
 #+DATE: Sometime 2016
 
+#+REVEAL_HTML: <script type="text/javascript" src="./presentation.js"></script>
+
 * What does that mean?
 #+REVEAL_HTML: </br>
 The recent evolution of C++ is (from one point of view) largely about
 *strengthening* and *expanding* the *capabilities for dealing with types*.
 
 #+ATTR_REVEAL: :frag (appear)
- - huge expansion of ~type_traits~
+ - expansion of ~type_traits~
  - ~decltype~ to utter types
  - ~auto~ to preserve types, prevent conversions, infer return types
- - ~nullptr~ to prevent ~int~ / ~pointer~ confusion
+ - ~nullptr~ to prevent ~int~ / pointer confusion
  - scoped ~enum~
- - Concepts TS
- - ~std::variant~
  - GSL: ~owner<T>~, ~not_null<T>~
+ - Concepts TS
 
 #+BEGIN_NOTES
 Some of the features added to modern C++ to deal with types.
@@ -41,7 +42,7 @@ Obviously someone thinks that types are important. And the ability to wrangle
 them and mould them to our purposes is an important part of C++.
 
 Types are the currency of metaprogramming, but also important for safety in
-"regular" programming; hence we see things like the GSL's owner<> and not_null<>.
+"regular" programming; hence we see things like the GSL's ~owner<>~ and ~not_null<>~.
 #+END_NOTES
 
 * FP isn't (only) about
@@ -70,10 +71,11 @@ Here are some things you may think of when functional programming is mentioned..
 #+ATTR_REVEAL: :frag (appear)
  - using types effectively and expressively
  - making illegal states unrepresentable
- - total functions
+ - making illegal behaviour result in a type error
+ - using total functions for easier to use, harder to misuse interfaces
 
 #+BEGIN_NOTES
-This aspect of functional programming is often overlooked.
+These aspects of functional programming are often overlooked.
 
 Many functional languages have well-developed, expressive type systems.
 
@@ -144,9 +146,10 @@ to know about types in order to output the correct instructions.
  - Determines the values that can be assigned?
  - Determines the meaning of the data?
 
-#+BEGIN_NOTES
-
-#+END_NOTES
+* What is a type?
+[[./int_bool_1.png]]
+#+ATTR_REVEAL: :frag appear
+[[./int_bool_2.png]]
 
 * What is a type?
 #+REVEAL_HTML: </br>
@@ -156,10 +159,6 @@ to know about types in order to output the correct instructions.
    - characterized by cardinality
  - Expressions have types
    - A program has a type
-
-#+BEGIN_NOTES
-
-#+END_NOTES
 
 * Let's play a game
 #+ATTR_REVEAL: :frag appear
@@ -172,6 +171,8 @@ I'll tell you a type.
 You tell me how many values it has.
 
 * Level 1
+#+REVEAL_HTML: </br>
+Types as sets of values
 
 * Level 1
 How many values?
@@ -234,7 +235,7 @@ enum class FireSwampDangers {
 * Level 1
 How many values?
 #+BEGIN_SRC cpp
-template <class T>
+template <typename T>
 struct Foo {
   T m_t;
 };
@@ -250,10 +251,9 @@ These types are equivalent:
 #+BEGIN_SRC cpp
 bool;
 
-enum class Foo
-{
-  BAR,
-  BAZ
+enum class InatorButtons {
+  ON_OFF,
+  SELF_DESTRUCT
 };
 #+END_SRC
 
@@ -261,6 +261,8 @@ enum class Foo
 Let's move on to level 2.
 
 * Level 2
+#+REVEAL_HTML: </br>
+Product Types
 
 * Level 2
 How many values?
@@ -295,7 +297,7 @@ tuple<bool, bool, bool>;
 * Level 2
 How many values?
 #+BEGIN_SRC cpp
-template <class T, class U>
+template <typename T, typename U>
 struct Foo {
   T m_t;
   U m_u;
@@ -315,6 +317,8 @@ This kind of compounding gives us a _product type_.
 On to Level 3.
 
 * Level 3
+#+REVEAL_HTML: </br>
+Sum Types
 
 * Level 3
 How many values?
@@ -337,7 +341,7 @@ std::variant<char, bool>;
 * Level 3
 How many values?
 #+BEGIN_SRC cpp
-template <class T, class U>
+template <typename T, typename U>
 struct Foo {
   std::variant<T, U>;
 }
@@ -352,14 +356,18 @@ inhabitants of the components.
 
 This kind of compounding gives us a _sum type_.
 
+* Victory!
+
+#+REVEAL_HTML: <br/><br/><div id="achv"><div class="achievement-banner"><div class="achievement-icon"><span class="icon"><span class="icon-trophy">&#127942;</span></span></div><div class="achievement-text"><p class="achievement-notification">ACHIEVEMENT UNLOCKED</p><p class="achievement-name">Algebraic Datatypes 101</p></div></div></div>
+
 * Equivalences
 #+BEGIN_SRC cpp
-template <class T>
+template <typename T>
 struct Foo {
   std::variant<T, T> m_v;
 };
 
-template <class T>
+template <typename T>
 struct Bar {
   T m_t;
   bool m_b;
@@ -369,13 +377,20 @@ struct Bar {
 We have a choice over how to represent values. ~std::variant~ will quickly
 become a very important tool for proper expression of states.
 
-(This is one reason why it's important that ~std::variant~ can't be empty.)
+This is one reason why it's important that ~std::variant~ can't be empty, or at
+least that an empty state is "meaningless".
+
+#+BEGIN_NOTES
+T + T = 2T.
+
+But note that in ~Bar~, we need to manually keep the two variables "in sync".
+#+END_NOTES
 
 * Algebraic Datatypes
 This is what it means to have an algebra of datatypes.
 
 #+ATTR_REVEAL: :frag (appear)
- - the ability to manipulate types with confidence
+ - the ability to reason about equality of types
  - to find equivalent formulations
    - more natural
    - more easily understood
@@ -401,7 +416,7 @@ We can define a ~vector<T>~ recursively:
 ${v(t)} = {1 + t v(t)}$
 
 #+ATTR_REVEAL: :frag appear
-(empty vector or head element * tail vector)
+(empty vector or (+) head element and (*) tail vector)
 
 * A Taste of Algebra with Datatypes
 And rearrange...
@@ -425,6 +440,11 @@ ${v(t)} = {{1} \over {1-t}}$
 #+REVEAL_HTML: Let's <a href="http://www.wolframalpha.com/input/?i=1/(1-t)" data-preview-link>ask Wolfram Alpha</a>.
 
 * A Taste of Algebra with Datatypes
+Series expansion at ${t = 0}$:
+
+${1 + t + t^2 + t^3 + t^4 +{ }...}$
+
+#+ATTR_REVEAL: :frag appear
 A ~vector<T>~ can have:
 #+ATTR_REVEAL: :frag (appear)
  - 0 elements (${1}$)
@@ -433,3 +453,522 @@ A ~vector<T>~ can have:
  - etc.
 
 * Making Illegal States Unrepresentable
+~std::variant~ is a game changer because it allows us to (more) properly express
+types, so that (more) illegal states are unrepresentable.
+
+It is hard to overestimate the change that ~std::variant~ will bring to C++.
+
+And it is hard to overestimate what a missed opportunity ~std::variant~ would be
+if it were allowed to be empty.
+
+#+BEGIN_NOTES
+C++'s type system is still not perfect by a long shot. But ~std::variant~ is an
+amazing upgrade.
+#+END_NOTES
+
+* Example: Connection State
+#+BEGIN_SRC cpp
+enum class ConnectionState {
+  DISCONNECTED,
+  CONNECTING,
+  CONNECTED,
+  CONNECTION_INTERRUPTED
+};
+
+struct Connection {
+  ConnectionState m_connectionState;
+
+  std::string m_serverAddress;
+  ConnectionId m_id;
+  std::chrono::system_clock::time_point m_connectedTime;
+  std::chrono::milliseconds m_lastPingTime;
+  Timer m_reconnectTimer;
+};
+#+END_SRC
+
+#+BEGIN_NOTES
+A very simple example of what a connection class might look like today.
+
+Functions interacting with this class would typically use a switch statement
+over the ~ConnectionState~.
+
+There are hidden invariants here that aren't enforced by the Connection type.
+
+Some of the fields are dependent on the connection state (reconnect time, last
+ping time). So it seems that some of these fields need sentinel values (eg
+invalid connection id).
+
+Worse, there is temptation to reuse fields for multiple states. Connected
+timestamp is perhaps likely to get reused to mean the instant of connection and
+the instant of disconnection.
+#+END_NOTES
+
+* Example: Connection State
+#+BEGIN_SRC cpp
+struct Connection {
+  std::string m_serverAddress;
+
+  struct Disconnected {};
+  struct Connecting {};
+  struct Connected {
+    ConnectionId m_id;
+    std::chrono::system_clock::time_point m_connectedTime;
+    std::optional<std::chrono::milliseconds> m_lastPingTime;
+  };
+  struct ConnectionInterrupted {
+    std::chrono::system_clock::time_point m_disconnectedTime;
+    Timer m_reconnectTimer;
+  };
+
+  std::variant<Disconnected,
+               Connecting,
+               Connected,
+               ConnectionInterrupted> m_connection;
+};
+#+END_SRC
+
+#+BEGIN_NOTES
+With types structured correctly, it's not possible to express illegal states.
+
+e.g. Ping time does not exist if we're not connected.
+
+(There are still things that are common to all states, e.g. perhaps this class
+represents connection to a specific server.)
+
+A switch statement could still exist, switching on the ~variant~'s ~index()~, or
+a visitor-based approach could be used.
+#+END_NOTES
+
+* Example: Nullable field
+#+REVEAL_HTML: </br>
+#+BEGIN_SRC cpp
+class Friend {
+  ...
+  std::string m_alias;
+  bool m_aliasPopulated;
+  ...
+};
+#+END_SRC
+These two fields need to be kept in sync everywhere.
+
+#+BEGIN_NOTES
+Here, a field is populated from a remote source and happens lazily and/or
+asynchronously. It is possible that the field never gets populated.
+
+All the code that deals with this field has to ensure that both variables are
+kept up to date in sync with each other.
+#+END_NOTES
+
+* Example: Nullable field
+#+REVEAL_HTML: </br>
+#+BEGIN_SRC cpp
+class Friend {
+  ...
+  std::optional<std::string> m_alias;
+  ...
+};
+#+END_SRC
+~std::optional~ provides a sentinel value that is outside the type.
+
+#+BEGIN_NOTES
+~std::optional~ captures the true state space of the variable. It is not
+possible for two fields to get out of step now.
+#+END_NOTES
+
+* Example: What?
+Find some other good example of sum types improving something in C++.
+
+* Example: Design Patterns
+The addition of sum types to C++ offers an alternative formulation for some
+design patterns.
+
+ - Command
+ - Composite
+ - Interpreter
+ - State
+
+State machines and expressions are naturally modelled with sum types.
+
+#+BEGIN_NOTES
+Traditional runtime polymorphism approach can lead to bloated base class issue.
+
+Type erasure is another way to go.
+
+Sum types + visitor/pattern matching is a third possibility, particularly
+natural for things like ASTs.
+
+Sum types are especially good for representing expressions (think JSON).
+
+The expression problem: easy to add new classes (use OO/interfaces) or new
+operations (use sum types/visitors)?
+#+END_NOTES
+
+* Sum types vs Runtime Polymorphism
+Runtime polymorphism (i.e. regular OO interface/implementation) allows manipulation of
+heterogeneous state with a uniform interface.
+
+Sum types allow manipulation of heterogenous state /and/ interface in a homogeneous way.
+
+#+BEGIN_NOTES
+This slide paraphrased from Andrei Alexandrescu's Dr Dobbs article, April 2002 (!)
+#+END_NOTES
+
+* Designing with Types
+#+REVEAL_HTML: </br>
+std::variant and std::optional are valuable tools that allow us to model the
+state of our business logic more accurately.
+
+When you match the types to the domain accurately, certain categories of tests
+just disappear.
+
+#+BEGIN_NOTES
+You don't have to test the edge cases where the representation can fall outside
+your reality - because that can't happen.
+#+END_NOTES
+
+* Designing with Types
+#+REVEAL_HTML: </br>
+Fitting types to their function more accurately makes code easier to understand
+and removes pitfalls.
+
+The bigger the codebase, the more vital the functionality, the more value in
+correct representation with types.
+
+#+BEGIN_NOTES
+When illegal states are unrepresentable, you don't have to worry about other
+programmers misunderstanding the code, or misusing data. In a sense, they
+/cannot/ write something that is wrong.
+
+And when I say "other programmers" of course I mean myself in 3 months...
+
+Questionably reusing fields, bending semantics, etc. These are bad practices.
+But they happen when we're chasing a deadline.
+#+END_NOTES
+
+* Using Types to Constrain Behaviour
+#+REVEAL_HTML: </br>
+An expressive type system with product and sum types allows us to model state
+more accurately.
+
+"Phantom types" is one technique that helps us to model the /behaviour/ of our
+business logic in the type system. Illegal behaviour becomes a type error.
+
+* Phantom Types: Before
+#+REVEAL_HTML: </br>
+#+BEGIN_SRC cpp
+std::string GetFormData();
+
+std::string SanitizeFormData(const std::string&);
+
+void ExecuteQuery(const std::string&);
+#+END_SRC
+An injection bug waiting to happen.
+
+#+BEGIN_NOTES
+Let's hope we don't meet little Bobby Tables, and that everywhere we execute a
+query we remembered to sanitize the data provided by the user.
+
+The type system is not helping us here. How can we use types to make sure that
+we stay safe?
+#+END_NOTES
+
+* Phantom Types: The setup
+#+REVEAL_HTML: </br>
+#+BEGIN_SRC cpp
+template <typename T>
+struct FormData {
+  explicit FormData(const string& input) : m_input(input) {}
+  std::string m_input;
+};
+
+struct sanitized {};
+struct unsanitized {};
+#+END_SRC
+~T~ is the "Phantom Type" here.
+
+#+BEGIN_NOTES
+Note that the template argument is unused. It exists _only_ for compile time
+type checking. There is no runtime overhead.
+#+END_NOTES
+
+* Phantom Types: After
+#+REVEAL_HTML: </br>
+#+BEGIN_SRC cpp
+FormData<unsanitized> GetFormData();
+
+std::optional<FormData<sanitized>>
+SanitizeFormData(const FormData<unsanitized>&);
+
+void ExecuteQuery(const FormData<sanitized>&);
+#+END_SRC
+
+#+BEGIN_NOTES
+User input is born unsanitized.
+
+It is impossible for us to execute unsanitized input. The compiler simply won't
+compile it.
+
+We've used types to help enforce the business logic.
+
+This is something similar to a strong typedef, or what enum class effectively
+does for integral types. This technique can also be used e.g. in a units
+library.
+#+END_NOTES
+
+* Total Functions
+#+REVEAL_HTML: </br>
+A /total function/ is a function that is defined for all inputs in its domain.
+
+#+ATTR_REVEAL: :frag appear
+~template <typename T>
+const T& min(const T& a, const T& b);~
+
+#+ATTR_REVEAL: :frag appear
+~float sqrt(float f);~
+
+#+BEGIN_NOTES
+We are straying into the realm of Concepts here.
+
+I'm not saying that total is the same thing as "no preconditions". The type must
+satisfy the requirements on it. But you can see that with functions like ~sqrt~
+there is a clear mismatch between the type of the function and the actual type
+of its domain.
+#+END_NOTES
+
+* Let's play another game
+#+ATTR_REVEAL: :frag appear
+To help us see how total functions with the right types can result in
+unsurprising code.
+
+#+ATTR_REVEAL: :frag appear
+I'll give you a function signature with no names attached.
+
+#+ATTR_REVEAL: :frag appear
+You tell me what it's called... (and you'll even know how to implement it).
+
+#+ATTR_REVEAL: :frag appear
+The only rule... it must be a /total/ function.
+
+#+BEGIN_NOTES
+Assume regular types. But you needn't assume anything else.
+
+And there are always ways to make things unexpected in C++. But assume nothing
+surprising here.
+#+END_NOTES
+
+* Name That Function
+#+REVEAL_HTML: </br>
+#+BEGIN_SRC cpp
+template <typename T>
+T f(T);
+#+END_SRC
+
+#+ATTR_REVEAL: :frag appear
+~identity~
+
+#+ATTR_REVEAL: :frag appear
+#+BEGIN_SRC cpp
+int f(int);
+#+END_SRC
+
+#+BEGIN_NOTES
+Note the odd situation here: we know more about ~f(T)~ than we do about
+~f(int)~.
+#+END_NOTES
+
+* Name That Function
+#+REVEAL_HTML: </br>
+#+BEGIN_SRC cpp
+template <typename T, typename U>
+T f(std::pair<T, U>);
+#+END_SRC
+
+#+ATTR_REVEAL: :frag appear
+~first~
+
+* Name That Function
+#+REVEAL_HTML: </br>
+#+BEGIN_SRC cpp
+template <typename T>
+T f(bool, T, T);
+#+END_SRC
+
+#+ATTR_REVEAL: :frag appear
+~select~
+
+* Name That Function
+#+REVEAL_HTML: </br>
+#+BEGIN_SRC cpp
+template <typename T, typename U>
+U f(std::function<U(T)>, T);
+#+END_SRC
+
+#+ATTR_REVEAL: :frag appear
+~apply~ or ~call~
+
+* Name That Function
+#+REVEAL_HTML: </br>
+#+BEGIN_SRC cpp
+template <typename T>
+vector<T> f(vector<T>);
+#+END_SRC
+
+#+ATTR_REVEAL: :frag appear
+~reverse~, ~shuffle~, ...
+
+#+BEGIN_NOTES
+For simplicity, I haven't written this signature in terms of iterators, but it
+would be just the same.
+#+END_NOTES
+
+* Name That Function
+#+REVEAL_HTML: </br>
+#+BEGIN_SRC cpp
+template <typename T>
+T f(vector<T>);
+#+END_SRC
+
+#+ATTR_REVEAL: :frag appear
+Not possible! It's a partial function - the ~vector~ might be empty.
+
+* Name That Function
+#+REVEAL_HTML: </br>
+#+BEGIN_SRC cpp
+template <typename T>
+optional<T> f(vector<T>);
+#+END_SRC
+
+#+ATTR_REVEAL: :frag appear
+~head~
+
+* Name That Function
+#+REVEAL_HTML: </br>
+#+BEGIN_SRC cpp
+template <typename T, typename U>
+vector<U> f(std::function<U(T)>, vector<T>);
+#+END_SRC
+
+#+ATTR_REVEAL: :frag appear
+~transform~ or ~map~
+
+* Name That Function
+#+REVEAL_HTML: </br>
+#+BEGIN_SRC cpp
+template <typename T>
+vector<T> f(function<bool(T)>, vector<T>);
+#+END_SRC
+
+#+ATTR_REVEAL: :frag appear
+~remove_if~, ~partition~, ...
+
+* Name That Function
+#+REVEAL_HTML: </br>
+#+BEGIN_SRC cpp
+template <typename T>
+T f(optional<T>);
+#+END_SRC
+
+#+ATTR_REVEAL: :frag appear
+Not possible!
+
+* Name That Function
+#+REVEAL_HTML: </br>
+#+BEGIN_SRC cpp
+template <typename K, typename V>
+V f(map<K, V>, K);
+#+END_SRC
+
+#+ATTR_REVEAL: :frag appear
+Not possible! But, er...
+
+#+ATTR_REVEAL: :frag appear
+#+BEGIN_SRC cpp
+V& std::map<K, V>::operator[](const K&);
+#+END_SRC
+
+* Name That Function
+#+REVEAL_HTML: </br>
+#+BEGIN_SRC cpp
+template <typename K, typename V>
+optional<V> f(map<K, V>, K);
+#+END_SRC
+
+#+ATTR_REVEAL: :frag appear
+~lookup~
+
+* What Just Happened?
+I gave you /almost nothing/.
+
+No variable names. No function names. No type names.
+
+Just bare type signatures.
+
+#+ATTR_REVEAL: :frag appear
+You were able to tell me exactly what the functions should be called, and likely
+knew instantly how to implement them.
+
+#+ATTR_REVEAL: :frag appear
+You will note that partial functions gave us some issues...
+
+#+BEGIN_NOTES
+Naming is one of the hardest problems in Comp Sci. Getting the types right is
+much easier. And if your types model the logic properly, perhaps you have
+"self-documenting code"?
+#+END_NOTES
+
+* Well-typed Functions
+#+REVEAL_HTML: </br>
+Writing /total functions/ with well-typed signatures can tell us a lot about
+functionality.
+
+Using types appropriately makes interfaces unsurprising, safer to use and harder
+to misuse.
+
+Total functions make more test categories vanish.
+
+* About Testing...
+In a previous talk, I talked about unit testing and in particular property-based testing.
+
+#+ATTR_REVEAL: :frag appear
+Effectively using types can reduce test code.
+
+#+ATTR_REVEAL: :frag appear
+Property-based tests say "for all values, this property is true".
+
+#+ATTR_REVEAL: :frag appear
+That is exactly what types /are/: universal quantifications about what can be
+done with data.
+
+#+ATTR_REVEAL: :frag appear
+Types scale better than tests. Instead of TDD, maybe try TDD!
+
+#+BEGIN_NOTES
+C++'s type system isn't yet powerful enough to be able to say goodbye to tests,
+but it is powerful enough that used effectively, we can reduce some of the
+drudgery of writing tests.
+
+Any time you're thinking something is true for all values, that's what a type
+can do.
+#+END_NOTES
+
+* Further Down the Rabbit Hole
+#+REVEAL_HTML: </br>
+ - [[http://en.wikipedia.org/wiki/Algebraic_data_type][Algebraic data type]] (Wikipedia)
+ - [[http://chris-taylor.github.io/blog/2013/02/10/the-algebra-of-algebraic-data-types/][The Algebra of Algebraic Data Types]] (blog)
+ - [[http://https://www.youtube.com/watch?v=YScIPA8RbVE][The Algebra of Algebraic Data Types]] (video)
+ - [[https://vimeo.com/14313378][Effective ML]] (Making Illegal States Unrepresentable)
+ - [[http://www.infoq.com/presentations/Types-Tests][Types vs Tests]] (Strange Loop 2012)
+
+* Thanks For Listening
+Goals for Well-typed Code
+ - Make illegal states unrepresentable
+ - Use ~std::variant~ and ~std::optional~ for formulations that
+   - are more natural
+   - fit the business logic state better
+ - Use phantom types for safety
+   - Make illegal behaviour a compile error
+ - Write total functions
+   - Unsurprising behaviour
+   - Easy to use, hard to misuse
+
+"When in doubt, create a type" -- Martin Fowler
