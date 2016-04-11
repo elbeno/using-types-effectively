@@ -458,9 +458,6 @@ types, so that (more) illegal states are unrepresentable.
 
 It is hard to overestimate the change that ~std::variant~ will bring to C++.
 
-And it is hard to overestimate what a missed opportunity ~std::variant~ would be
-if it were allowed to be empty.
-
 #+BEGIN_NOTES
 C++'s type system is still not perfect by a long shot. But ~std::variant~ is an
 amazing upgrade.
@@ -1002,7 +999,17 @@ can do.
  - [[http://www.infoq.com/presentations/Types-Tests][Types vs Tests]] (Strange Loop 2012)
 
 * Thanks For Listening
-Goals for Well-typed Code
+#+REVEAL_HTML: </br>
+"On the whole, I'm inclined to say that when in doubt, make a new type."
+#+REVEAL_HTML: <div align="right">
+-- Martin Fowler, [[http://martinfowler.com/ieeeSoftware/whenType.pdf][/When to Make a Type/]]
+#+REVEAL_HTML: </div></br>
+"Don't set a flag; set the data."
+#+REVEAL_HTML: <div align="right">
+ -- EWD ([[http://c2.com/cgi/wiki?EwDijkstraQuotes][attributed]])
+#+REVEAL_HTML: </div>
+
+* Goals for Well-typed Code
  - Make illegal states unrepresentable
  - Use ~std::variant~ and ~std::optional~ for formulations that
    - are more natural
@@ -1013,4 +1020,3 @@ Goals for Well-typed Code
    - Unsurprising behaviour
    - Easy to use, hard to misuse
 
-"When in doubt, create a type" -- Martin Fowler
