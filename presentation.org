@@ -543,7 +543,6 @@ a visitor-based approach could be used.
 #+REVEAL_HTML: </br>
 #+BEGIN_SRC cpp
 class Friend {
-  ...
   std::string m_alias;
   bool m_aliasPopulated;
   ...
@@ -563,7 +562,6 @@ kept up to date in sync with each other.
 #+REVEAL_HTML: </br>
 #+BEGIN_SRC cpp
 class Friend {
-  ...
   std::optional<std::string> m_alias;
   ...
 };
@@ -575,8 +573,52 @@ class Friend {
 possible for two fields to get out of step now.
 #+END_NOTES
 
-* Example: What?
-Find some other good example of sum types improving something in C++.
+* Example: Monster AI
+#+REVEAL_HTML: </br>
+#+BEGIN_SRC cpp
+enum class AggroState {
+  IDLE,
+  CHASING,
+  FIGHTING
+};
+
+class MonsterAI {
+  AggroState m_aggroState;
+
+  float m_aggroRadius;
+  PlayerId m_target;
+  Timer m_chaseTimer;
+};
+#+END_SRC
+
+#+BEGIN_NOTES
+Once again, presumably PlayerId has some invalid sentinel value.
+#+END_NOTES
+
+* Example: Monster AI
+#+REVEAL_HTML: </br>
+#+BEGIN_SRC cpp
+class MonsterAI {
+  struct Idle {
+    float m_aggroRadius;
+  };
+  struct Chasing {
+    PlayerId m_target;
+    Timer m_chaseTimer;
+  };
+  struct Fighting {
+    PlayerId m_target;
+  };
+
+  std::variant<Idle, Chasing, Fighting> m_aggroState;
+};
+#+END_SRC
+
+#+BEGIN_NOTES
+Now the variables are properly placed into the states that use them.
+
+Chasing and Fighting states could inherit from an Aggroed state that holds a target.
+#+END_NOTES
 
 * Example: Design Patterns
 The addition of sum types to C++ offers an alternative formulation for some
