@@ -12,7 +12,7 @@
 #+REVEAL_EXTRA_CSS: ./presentation.css
 #+REVEAL_ROOT: ../reveal.js/
 
-# (setq org-reveal-title-slide-template "<h1>%t</h1><h2>%a</h2><h3>%e / <a href=\"http://twitter.com/ben_deane\">@ben_deane</a></h3><h2>%d</h2>")
+# (setq org-reveal-title-slide-template "<h1>%t</h1><br/><h2>%a</h2><h3>%e / <a href=\"http://twitter.com/ben_deane\">@ben_deane</a></h3><h2>%d</h2>")
 
 #+TITLE: Using Types Effectively
 #+AUTHOR: Ben Deane
@@ -22,7 +22,7 @@
 #+REVEAL_HTML: <script type="text/javascript" src="./presentation.js"></script>
 
 * What does that mean?
-#+REVEAL_HTML: </br>
+#+REVEAL_HTML: <br/>
 The recent evolution of C++ is (from one point of view) largely about
 *strengthening* and *expanding* the *capabilities for dealing with types*.
 
@@ -46,7 +46,7 @@ Types are the currency of metaprogramming, but also important for safety in
 #+END_NOTES
 
 * FP isn't (only) about
-#+REVEAL_HTML: </br>
+#+REVEAL_HTML: <br/>
 #+ATTR_REVEAL: :frag (appear)
  - first class functions
  - higher order functions
@@ -67,7 +67,7 @@ Here are some things you may think of when functional programming is mentioned..
 #+END_NOTES
 
 * FP is (also, importantly) about
-#+REVEAL_HTML: </br>
+#+REVEAL_HTML: <br/>
 #+ATTR_REVEAL: :frag (appear)
  - using types effectively and expressively
  - making illegal states unrepresentable
@@ -83,13 +83,13 @@ C++ is moving in that direction.
 #+END_NOTES
 
 * Why does C++ have a type system?
-#+REVEAL_HTML: </br>
+#+REVEAL_HTML: <br/>
 #+ATTR_REVEAL: :frag (appear appear appear appear) :frag_idx (1 2 3 4)
  - to help programmers?
  - to hinder programmers?
  - because objects?
  - for the compiler's benefit?
-#+REVEAL_HTML: </br></br>
+#+REVEAL_HTML: <br/><br/>
 #+ATTR_REVEAL: :frag appear :frag_idx 5
 What has a type system ever done for us?
 #+REVEAL_HTML: <small>
@@ -105,7 +105,7 @@ Is it so the compiler can complain about signed/unsigned comparisons?
 #+END_NOTES
 
 * Why does C have a type system?
-#+REVEAL_HTML: </br><div align="left">
+#+REVEAL_HTML: <br/><div align="left">
 "The machines on which we first used BCPL and then B were word-addressed, and
 these languages' single data type, the 'cell,' comfortably equated with the
 hardware machine word. The advent of the PDP-11 exposed several inadequacies of
@@ -138,7 +138,7 @@ to know about types in order to output the correct instructions.
 #+END_NOTES
 
 * What is a type?
-#+REVEAL_HTML: </br>
+#+REVEAL_HTML: <br/>
 #+ATTR_REVEAL: :frag (appear)
  - A way for the compiler to know what opcodes to output (dmr's motivation)?
  - The way data is stored (representational)?
@@ -152,7 +152,7 @@ to know about types in order to output the correct instructions.
 [[./int_bool_2.png]]
 
 * What is a type?
-#+REVEAL_HTML: </br>
+#+REVEAL_HTML: <br/>
 #+ATTR_REVEAL: :frag (appear)
  - The set of values that can inhabit an expression
    - may be finite or "infinite"
@@ -171,7 +171,7 @@ I'll tell you a type.
 You tell me how many values it has.
 
 * Level 1
-#+REVEAL_HTML: </br>
+#+REVEAL_HTML: <br/>
 Types as sets of values
 
 * Level 1
@@ -261,7 +261,7 @@ enum class InatorButtons {
 Let's move on to level 2.
 
 * Level 2
-#+REVEAL_HTML: </br>
+#+REVEAL_HTML: <br/>
 Product Types
 
 * Level 2
@@ -288,7 +288,7 @@ struct Foo {
 * Level 2
 How many values?
 #+BEGIN_SRC cpp
-tuple<bool, bool, bool>;
+std::tuple<bool, bool, bool>;
 #+END_SRC
 
 #+ATTR_REVEAL: :frag appear
@@ -317,7 +317,7 @@ This kind of compounding gives us a _product type_.
 On to Level 3.
 
 * Level 3
-#+REVEAL_HTML: </br>
+#+REVEAL_HTML: <br/>
 Sum Types
 
 * Level 3
@@ -537,7 +537,7 @@ a visitor-based approach could be used.
 #+END_NOTES
 
 * Example: Nullable field
-#+REVEAL_HTML: </br>
+#+REVEAL_HTML: <br/>
 #+BEGIN_SRC cpp
 class Friend {
   std::string m_alias;
@@ -556,7 +556,7 @@ kept up to date in sync with each other.
 #+END_NOTES
 
 * Example: Nullable field
-#+REVEAL_HTML: </br>
+#+REVEAL_HTML: <br/>
 #+BEGIN_SRC cpp
 class Friend {
   std::optional<std::string> m_alias;
@@ -571,7 +571,7 @@ possible for two fields to get out of step now.
 #+END_NOTES
 
 * Example: Monster AI
-#+REVEAL_HTML: </br>
+#+REVEAL_HTML: <br/>
 #+BEGIN_SRC cpp
 enum class AggroState {
   IDLE,
@@ -593,7 +593,7 @@ Once again, presumably PlayerId has some invalid sentinel value.
 #+END_NOTES
 
 * Example: Monster AI
-#+REVEAL_HTML: </br>
+#+REVEAL_HTML: <br/>
 #+BEGIN_SRC cpp
 class MonsterAI {
   struct Idle {
@@ -653,7 +653,7 @@ This slide paraphrased from Andrei Alexandrescu's Dr Dobbs article, April 2002 (
 #+END_NOTES
 
 * Designing with Types
-#+REVEAL_HTML: </br>
+#+REVEAL_HTML: <br/>
 std::variant and std::optional are valuable tools that allow us to model the
 state of our business logic more accurately.
 
@@ -666,7 +666,7 @@ your reality - because that can't happen.
 #+END_NOTES
 
 * Designing with Types
-#+REVEAL_HTML: </br>
+#+REVEAL_HTML: <br/>
 Fitting types to their function more accurately makes code easier to understand
 and removes pitfalls.
 
@@ -685,7 +685,7 @@ But they happen when we're chasing a deadline.
 #+END_NOTES
 
 * Using Types to Constrain Behaviour
-#+REVEAL_HTML: </br>
+#+REVEAL_HTML: <br/>
 An expressive type system with product and sum types allows us to model state
 more accurately.
 
@@ -693,7 +693,7 @@ more accurately.
 business logic in the type system. Illegal behaviour becomes a type error.
 
 * Phantom Types: Before
-#+REVEAL_HTML: </br>
+#+REVEAL_HTML: <br/>
 #+BEGIN_SRC cpp
 std::string GetFormData();
 
@@ -712,7 +712,7 @@ we stay safe?
 #+END_NOTES
 
 * Phantom Types: The setup
-#+REVEAL_HTML: </br>
+#+REVEAL_HTML: <br/>
 #+BEGIN_SRC cpp
 template <typename T>
 struct FormData {
@@ -731,7 +731,7 @@ type checking. There is no runtime overhead.
 #+END_NOTES
 
 * Phantom Types: After
-#+REVEAL_HTML: </br>
+#+REVEAL_HTML: <br/>
 #+BEGIN_SRC cpp
 FormData<unsanitized> GetFormData();
 
@@ -755,7 +755,7 @@ library.
 #+END_NOTES
 
 * Total Functions
-#+REVEAL_HTML: </br>
+#+REVEAL_HTML: <br/>
 A /total function/ is a function that is defined for all inputs in its domain.
 
 #+ATTR_REVEAL: :frag appear
@@ -796,7 +796,7 @@ surprising here.
 #+END_NOTES
 
 * Name That Function
-#+REVEAL_HTML: </br>
+#+REVEAL_HTML: <br/>
 #+BEGIN_SRC cpp
 template <typename T>
 T f(T);
@@ -816,17 +816,17 @@ Note the odd situation here: we know more about ~f(T)~ than we do about
 #+END_NOTES
 
 * Name That Function
-#+REVEAL_HTML: </br>
+#+REVEAL_HTML: <br/>
 #+BEGIN_SRC cpp
 template <typename T, typename U>
-T f(std::pair<T, U>);
+T f(pair<T, U>);
 #+END_SRC
 
 #+ATTR_REVEAL: :frag appear
 ~first~
 
 * Name That Function
-#+REVEAL_HTML: </br>
+#+REVEAL_HTML: <br/>
 #+BEGIN_SRC cpp
 template <typename T>
 T f(bool, T, T);
@@ -836,17 +836,17 @@ T f(bool, T, T);
 ~select~
 
 * Name That Function
-#+REVEAL_HTML: </br>
+#+REVEAL_HTML: <br/>
 #+BEGIN_SRC cpp
 template <typename T, typename U>
-U f(std::function<U(T)>, T);
+U f(function<U(T)>, T);
 #+END_SRC
 
 #+ATTR_REVEAL: :frag appear
 ~apply~ or ~call~
 
 * Name That Function
-#+REVEAL_HTML: </br>
+#+REVEAL_HTML: <br/>
 #+BEGIN_SRC cpp
 template <typename T>
 vector<T> f(vector<T>);
@@ -861,7 +861,7 @@ would be just the same.
 #+END_NOTES
 
 * Name That Function
-#+REVEAL_HTML: </br>
+#+REVEAL_HTML: <br/>
 #+BEGIN_SRC cpp
 template <typename T>
 T f(vector<T>);
@@ -871,7 +871,7 @@ T f(vector<T>);
 Not possible! It's a partial function - the ~vector~ might be empty.
 
 * Name That Function
-#+REVEAL_HTML: </br>
+#+REVEAL_HTML: <br/>
 #+BEGIN_SRC cpp
 template <typename T>
 optional<T> f(vector<T>);
@@ -881,17 +881,17 @@ optional<T> f(vector<T>);
 ~head~
 
 * Name That Function
-#+REVEAL_HTML: </br>
+#+REVEAL_HTML: <br/>
 #+BEGIN_SRC cpp
 template <typename T, typename U>
-vector<U> f(std::function<U(T)>, vector<T>);
+vector<U> f(function<U(T)>, vector<T>);
 #+END_SRC
 
 #+ATTR_REVEAL: :frag appear
 ~transform~ or ~map~
 
 * Name That Function
-#+REVEAL_HTML: </br>
+#+REVEAL_HTML: <br/>
 #+BEGIN_SRC cpp
 template <typename T>
 vector<T> f(function<bool(T)>, vector<T>);
@@ -901,7 +901,7 @@ vector<T> f(function<bool(T)>, vector<T>);
 ~remove_if~, ~partition~, ...
 
 * Name That Function
-#+REVEAL_HTML: </br>
+#+REVEAL_HTML: <br/>
 #+BEGIN_SRC cpp
 template <typename T>
 T f(optional<T>);
@@ -911,7 +911,7 @@ T f(optional<T>);
 Not possible!
 
 * Name That Function
-#+REVEAL_HTML: </br>
+#+REVEAL_HTML: <br/>
 #+BEGIN_SRC cpp
 template <typename K, typename V>
 V f(map<K, V>, K);
@@ -922,11 +922,11 @@ Not possible! But, er...
 
 #+ATTR_REVEAL: :frag appear
 #+BEGIN_SRC cpp
-V& std::map<K, V>::operator[](const K&);
+V& map<K, V>::operator[](const K&);
 #+END_SRC
 
 * Name That Function
-#+REVEAL_HTML: </br>
+#+REVEAL_HTML: <br/>
 #+BEGIN_SRC cpp
 template <typename K, typename V>
 optional<V> f(map<K, V>, K);
@@ -956,7 +956,7 @@ much easier. And if your types model the logic properly, perhaps you have
 #+END_NOTES
 
 * Well-typed Functions
-#+REVEAL_HTML: </br>
+#+REVEAL_HTML: <br/>
 Writing /total functions/ with well-typed signatures can tell us a lot about
 functionality.
 
@@ -991,7 +991,7 @@ can do.
 #+END_NOTES
 
 * Further Down the Rabbit Hole
-#+REVEAL_HTML: </br>
+#+REVEAL_HTML: <br/>
  - [[http://en.wikipedia.org/wiki/Algebraic_data_type][Algebraic data type]] (Wikipedia)
  - [[http://chris-taylor.github.io/blog/2013/02/10/the-algebra-of-algebraic-data-types/][The Algebra of Algebraic Data Types]] (blog)
  - [[http://https://www.youtube.com/watch?v=YScIPA8RbVE][The Algebra of Algebraic Data Types]] (video)
@@ -999,11 +999,11 @@ can do.
  - [[http://www.infoq.com/presentations/Types-Tests][Types vs Tests]] (Strange Loop 2012)
 
 * Thanks For Listening
-#+REVEAL_HTML: </br>
+#+REVEAL_HTML: <br/>
 "On the whole, I'm inclined to say that when in doubt, make a new type."
 #+REVEAL_HTML: <div align="right">
 -- Martin Fowler, [[http://martinfowler.com/ieeeSoftware/whenType.pdf][/When to Make a Type/]]
-#+REVEAL_HTML: </div></br>
+#+REVEAL_HTML: </div><br/>
 "Don't set a flag; set the data."
 #+REVEAL_HTML: <div align="right">
  -- EWD ([[http://c2.com/cgi/wiki?EwDijkstraQuotes][attributed]])
