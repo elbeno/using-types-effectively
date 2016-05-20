@@ -58,6 +58,7 @@ Types are the currency of metaprogramming, but also important for safety in
  - laziness
  - garbage collection
  - boxed data types / "inefficient" runtime models
+ - monads, monoids, functors, etc
 
 #+BEGIN_NOTES
 Functional languages can teach us a thing or two about types. (After all, they
@@ -92,16 +93,13 @@ C++ is moving in that direction.
 #+REVEAL_HTML: <br/><br/>
 #+ATTR_REVEAL: :frag appear :frag_idx 5
 What has a type system ever done for us?
-#+REVEAL_HTML: <small>
-#+ATTR_REVEAL: :frag appear :frag_idx 5
-(...apart from the sanitation, the medicine, education, wine, public order,
-irrigation, roads, the fresh-water system, and public health...)
-#+REVEAL_HTML: </small>
 
 #+BEGIN_NOTES
 C++ has a stronger type system than C. Why?
 
 Is it so the compiler can complain about signed/unsigned comparisons?
+
+What use is a type system? This is the question this talk will help to answer.
 #+END_NOTES
 
 * Why does C have a type system?
@@ -125,7 +123,7 @@ important then as they became later."
 #+REVEAL_HTML: </div>
 
 #+BEGIN_NOTES
-The PDP-11 was the new hotness.
+1971/72: The PDP-11 was the new hotness.
 
 It could operate on (8-bit) bytes and (16-bit) words. If your language only
 operates on words ('cells'), string/char handling is awkward.
@@ -222,7 +220,7 @@ struct Foo {};
 * Level 1
 How many values?
 #+BEGIN_SRC cpp
-enum class FireSwampDangers {
+enum FireSwampDangers {
   FLAME_SPURTS,
   LIGHTNING_SAND,
   ROUSES
@@ -231,6 +229,13 @@ enum class FireSwampDangers {
 
 #+ATTR_REVEAL: :frag appear
 3
+
+#+BEGIN_NOTES
+It is possible to put something into FireSwampDangers that fits
+representationally (eg. the value 4). But that would be meaningless: there would
+be no connection between the value represented and its interpretation. Because
+there is no interpretation: cf. an unconstructed object.
+#+END_NOTES
 
 * Level 1
 How many values?
@@ -399,8 +404,9 @@ This is what it means to have an algebra of datatypes.
    them
  - to eliminate illegal states by making them inexpressible
 
+#+REVEAL_HTML: <br/></br>
 #+ATTR_REVEAL: :frag appear
-~std::variant~ has been a long time coming: this is why it will be so important.
+~std::variant~ has been a long time coming: this is why it's important
 
 * A Taste of Algebra with Datatypes
 How many values?
@@ -654,7 +660,7 @@ This slide paraphrased from Andrei Alexandrescu's Dr Dobbs article, April 2002 (
 
 * Designing with Types
 #+REVEAL_HTML: <br/>
-std::variant and std::optional are valuable tools that allow us to model the
+~std::variant~ and ~std::optional~ are valuable tools that allow us to model the
 state of our business logic more accurately.
 
 When you match the types to the domain accurately, certain categories of tests
