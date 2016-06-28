@@ -10,6 +10,7 @@
                 newachv = achv.cloneNode(true);
                 achv.parentNode.replaceChild(newachv, achv);
             }
+            window.Reveal.pause();
         });
     });
 
