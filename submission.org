@@ -1,0 +1,74 @@
+Career (20+ years) games industry programmer; generic and functional programming
+enthusiast. So I'm keen on performance (of course, I use C++) and I like using
+theory to gaining insights into practical problems. Currently a principal
+engineer at Blizzard Entertainment where I drive a lot of internal C++ learning.
+I study everything I can because the world is interesting. I've previously
+(2015) presented at C++Now and CppCon.
+
+--
+
+Using Types Effectively
+
+C++ has a pretty good type system, and modern C++ gives us a greater ability
+than ever before to use that type system for good: to make APIs easier to use
+and harder to misuse, to make our datatypes more closely express our intent, and
+generally to make code safer, more obvious in function and perhaps even faster.
+
+This is an interactive session - incorporating games played between presenter
+and audience, even - taking a look at choices available to us as datatype and
+API designers, and examining how a little knowledge about the algebra of
+algebraic datatypes can help. We'll see why std::optional and (hopefully soon)
+std::variant will quickly become an essential part of everyone's toolbox, and
+also explore how types can be used to express not just the structure of data,
+but also the behaviour of objects and functions.
+
+--
+
+* Introduction
+** What is a type?
+** Why do we have types?
+
+* Game 1: Types as sets of values
+** Integral types
+** Equivalence by equal cardinality
+
+* Game 2: Product types
+** std::pair
+** structs
+** std::tuple
+** reasoning about generic product types
+
+* Game 3: Sum types
+** std::optional
+** std::variant
+** reasoning about generic sum types
+
+* Algebraic datatypes
+** Equivalences
+** Choices of formulation
+** An aside: how to interpret std::vector
+
+* Making illegal states unrepresentable
+** Example: a network connection in various states
+** Example: a nullable field, asynchronously fetched
+** Example: monster AI
+
+* Designing with type algebra
+** A look at some design patterns
+** More naturally modelling design patterns
+** Sum types vs runtime polymorphism
+** Designing with std::optional and std::variant
+
+* Constraining behaviour with types
+** Phantom types
+** Example: using phantom types to prevent injection attacks
+
+* Game 4: Name that function
+** How appropriate typing makes functionality obvious
+** Total vs partial functions
+** Pitfalls of partial functions
+
+* TDD (Type-driven development)
+** Make tests disappear
+** Further down the rabbit hole
+** Goals for well-typed code

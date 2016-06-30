@@ -4,11 +4,14 @@
     window.addEventListener('load', function () {
         window.Reveal.addEventListener('slidechanged', function (event) {
             var achv = document.getElementById("achv"),
+                achvParent = achv.parentNode,
                 newachv = {};
             // event.previousSlide, event.currentSlide, event.indexh, event.indexv
-            if (event.indexh === 29) {
+            if (event.indexh === 38) {
                 newachv = achv.cloneNode(true);
-                achv.parentNode.replaceChild(newachv, achv);
+                achvParent.removeChild(achv);
+                setTimeout(function() {
+                    achvParent.appendChild(newachv); }, 500);
             }
             window.Reveal.pause();
         });
