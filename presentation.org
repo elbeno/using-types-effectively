@@ -6,7 +6,7 @@
 #+REVEAL_MARGIN: 0.1
 #+REVEAL_MIN_SCALE: 0.5
 #+REVEAL_MAX_SCALE: 2.5
-#+REVEAL_TRANS: slide
+#+REVEAL_TRANS: none
 #+REVEAL_THEME: solarized
 #+REVEAL_HLEVEL: 1
 #+REVEAL_EXTRA_CSS: ./presentation.css
@@ -19,11 +19,11 @@
 #+TITLE: Using Types Effectively
 #+AUTHOR: Ben Deane
 #+EMAIL: bdeane@blizzard.com
-#+DATE: June 30th, 2016
+#+DATE: September 19th, 2016
 
 #+REVEAL_HTML: <script type="text/javascript" src="./presentation.js"></script>
-
-* What does that mean?
+* Using Types Effectively?
+** What does that mean?
 #+REVEAL_HTML: <br/>
 The recent evolution of C++ is (from one point of view) largely about
 *strengthening* and *expanding* the *capabilities for dealing with types*.
@@ -47,7 +47,7 @@ Types are the currency of metaprogramming, but also important for safety in
 "regular" programming; hence we see things like the GSL's ~owner<>~ and ~not_null<>~.
 #+END_NOTES
 
-* FP isn't (only) about
+** FP isn't (only) about
 #+REVEAL_HTML: <br/>
 #+ATTR_REVEAL: :frag (appear)
  - first class functions
@@ -69,7 +69,7 @@ seem to be teaching us everything else.)
 Here are some things you may think of when functional programming is mentioned...
 #+END_NOTES
 
-* FP is (also, importantly) about
+** FP is (also, importantly) about
 #+REVEAL_HTML: <br/>
 #+ATTR_REVEAL: :frag (appear)
  - using types effectively and expressively
@@ -85,7 +85,7 @@ Many functional languages have well-developed, expressive type systems.
 C++ is moving in that direction.
 #+END_NOTES
 
-* Why does C++ have a type system?
+** Why does C++ have a type system?                                :noexport:
 #+REVEAL_HTML: <br/>
 #+ATTR_REVEAL: :frag (appear appear appear appear) :frag_idx (1 2 3 4)
  - to help programmers?
@@ -104,7 +104,7 @@ Is it so the compiler can complain about signed/unsigned comparisons?
 What use is a type system? This is the question this talk will help to answer.
 #+END_NOTES
 
-* Why does C have a type system?
+** Why does C have a type system?                                  :noexport:
 #+REVEAL_HTML: <br/><div align="left">
 "The machines on which we first used BCPL and then B were word-addressed, and
 these languages' single data type, the 'cell,' comfortably equated with the
@@ -124,7 +124,7 @@ important then as they became later."
 -- dmr, [[https://www.bell-labs.com/usr/dmr/www/chist.html][/The Development of the C Language/]]
 #+REVEAL_HTML: </div>
 
-#+BEGIN_NOTES
+
 The PDP-10 was old, with its 36-bit words.
 
 1971/72: The PDP-11 was the new hotness.
@@ -139,7 +139,7 @@ DEC promised floating point capability in hardware! So the C compiler would need
 to know about types in order to output the correct instructions.
 #+END_NOTES
 
-* What is a type?
+** What is a type?
 #+REVEAL_HTML: <br/>
 #+ATTR_REVEAL: :frag (appear)
  - A way for the compiler to know what opcodes to output (dmr's motivation)?
@@ -148,12 +148,12 @@ to know about types in order to output the correct instructions.
  - Determines the values that can be assigned?
  - Determines the meaning of the data?
 
-* What is a type?
+** What is a type?
 [[./int_bool_1.png]]
 #+ATTR_REVEAL: :frag appear
 [[./int_bool_2.png]]
 
-* What is a type?
+** What is a type?
 #+REVEAL_HTML: <br/>
 #+ATTR_REVEAL: :frag (appear)
  - The set of values that can inhabit an expression
@@ -162,7 +162,7 @@ to know about types in order to output the correct instructions.
  - Expressions have types
    - A program has a type
 
-* Let's play a game
+** Let's play a game
 #+ATTR_REVEAL: :frag appear
 To help us get thinking about types.
 
@@ -172,11 +172,14 @@ I'll tell you a type.
 #+ATTR_REVEAL: :frag appear
 You tell me how many values it has.
 
-* Level 1
+#+ATTR_REVEAL: :frag appear
+There are no tricks: if it seems obvious, it is!
+
+** Level 1
 #+REVEAL_HTML: <br/>
 Types as sets of values
 
-* Level 1
+** Level 1
 How many values?
 #+BEGIN_SRC cpp
 bool;
@@ -185,7 +188,7 @@ bool;
 #+ATTR_REVEAL: :frag appear
 2 (~true~ and ~false~)
 
-* Level 1
+** Level 1
 How many values?
 #+BEGIN_SRC cpp
 char;
@@ -194,7 +197,7 @@ char;
 #+ATTR_REVEAL: :frag appear
 256
 
-* Level 1
+** Level 1
 How many values?
 #+BEGIN_SRC cpp
 void;
@@ -217,7 +220,7 @@ struct Bar { template <typename T> Bar(); };
 cf BASIC's function vs procedure
 #+END_NOTES
 
-* Level 1
+** Level 1
 How many values?
 #+BEGIN_SRC cpp
 struct Foo {};
@@ -226,7 +229,7 @@ struct Foo {};
 #+ATTR_REVEAL: :frag appear
 1
 
-* Level 1
+** Level 1
 How many values?
 #+BEGIN_SRC cpp
 enum FireSwampDangers {
@@ -246,7 +249,7 @@ be no connection between the value represented and its interpretation. Because
 there is no interpretation: cf. an unconstructed object.
 #+END_NOTES
 
-* Level 1
+** Level 1
 How many values?
 #+BEGIN_SRC cpp
 template <typename T>
@@ -258,7 +261,7 @@ struct Foo {
 #+ATTR_REVEAL: :frag appear
 ~Foo~ has as many values as ~T~
 
-* End of Level 1
+** End of Level 1
 Algebraically, a type is the number of values that inhabit it.
 
 These types are equivalent:
@@ -274,11 +277,11 @@ enum class InatorButtons {
 #+ATTR_REVEAL: :frag appear
 Let's move on to level 2.
 
-* Level 2
+** Level 2
 #+REVEAL_HTML: <br/>
-Product Types
+Aggregating Types
 
-* Level 2
+** Level 2
 How many values?
 #+BEGIN_SRC cpp
 std::pair<char, bool>;
@@ -287,7 +290,7 @@ std::pair<char, bool>;
 #+ATTR_REVEAL: :frag appear
 256 * 2 = 512
 
-* Level 2
+** Level 2
 How many values?
 #+BEGIN_SRC cpp
 struct Foo {
@@ -299,7 +302,7 @@ struct Foo {
 #+ATTR_REVEAL: :frag appear
 256 * 2 = 512
 
-* Level 2
+** Level 2
 How many values?
 #+BEGIN_SRC cpp
 std::tuple<bool, bool, bool>;
@@ -308,7 +311,7 @@ std::tuple<bool, bool, bool>;
 #+ATTR_REVEAL: :frag appear
 2 * 2 * 2 = 8
 
-* Level 2
+** Level 2
 How many values?
 #+BEGIN_SRC cpp
 template <typename T, typename U>
@@ -321,7 +324,7 @@ struct Foo {
 #+ATTR_REVEAL: :frag appear
 (# of values in ~T~) * (# of values in ~U~)
 
-* End of Level 2
+** End of Level 2
 When two types are "concatenated" into one compound type, we _multiply_ the # of
 inhabitants of the components.
 
@@ -330,11 +333,11 @@ This kind of compounding gives us a _product type_.
 #+ATTR_REVEAL: :frag appear
 On to Level 3.
 
-* Level 3
+** Level 3
 #+REVEAL_HTML: <br/>
-Sum Types
+Alternating Types
 
-* Level 3
+** Level 3
 How many values?
 #+BEGIN_SRC cpp
 std::optional<char>;
@@ -343,7 +346,7 @@ std::optional<char>;
 #+ATTR_REVEAL: :frag appear
 256 + 1 = 257
 
-* Level 3
+** Level 3
 How many values?
 #+BEGIN_SRC cpp
 std::variant<char, bool>;
@@ -352,7 +355,7 @@ std::variant<char, bool>;
 #+ATTR_REVEAL: :frag appear
 256 + 2 = 258
 
-* Level 3
+** Level 3
 How many values?
 #+BEGIN_SRC cpp
 template <typename T, typename U>
@@ -364,17 +367,17 @@ struct Foo {
 #+ATTR_REVEAL: :frag appear
 (# of values in ~T~) + (# of values in ~U~)
 
-* End of Level 3
+** End of Level 3
 When two types are "alternated" into one compound type, we _add_ the # of
 inhabitants of the components.
 
 This kind of compounding gives us a _sum type_.
 
-* Level 4
+** Level 4
 #+REVEAL_HTML: <br/>
 Function Types
 
-* Level 4
+** Level 4
 How many values?
 #+begin_src c++
 bool f(bool);
@@ -383,16 +386,19 @@ bool f(bool);
 #+ATTR_REVEAL: :frag appear
 4
 
-* Level 4
+** Level 4
 Four possible values
+ [[./function_bool.svg]]
+
+** Level 4
 #+begin_src c++
-bool f1(bool) { return true; }
-bool f2(bool) { return false; }
-bool f3(bool b) { return b; }
+bool f1(bool b) { return b; }
+bool f2(bool) { return true; }
+bool f3(bool) { return false; }
 bool f4(bool b) { return !b; }
 #+end_src
 
-* Level 4
+** Level 4
 How many values?
 #+begin_src c++
 char f(bool);
@@ -401,7 +407,7 @@ char f(bool);
 #+ATTR_REVEAL: :frag appear
 256 * 256 = 65,536
 
-* Level 4
+** Level 4
 How many values (for ~f~)?
 #+begin_src c++
 enum class Foo
@@ -416,12 +422,12 @@ char f(Foo);
 #+ATTR_REVEAL: :frag appear
 256 * 256 * 256 = 16,777,216
 
-* Level 4
+** Level 4
 The number of values of a function is the number of different ways we can draw
 arrows between the inputs and the outputs.
  [[./function.svg]]
 
-* Level 4
+** Level 4
 How many values?
 #+begin_src c++
 template <class T, class U>
@@ -431,11 +437,11 @@ U f(T);
 #+ATTR_REVEAL: :frag appear
 $|U|^{|T|}$
 
-* End of Level 4
+** End of Level 4
 When we have a _function_ from $A$ to $B$, we raise the # of inhabitants of
 $B$ to the power of the # of inhabitants of $A$.
 
-* End of Level 4 (corollary)
+** End of Level 4 (corollary)
 Hence a curried function is equivalent to its uncurried alternative.
 
 
@@ -447,11 +453,11 @@ F_{uncurried}::(A,B) \rightarrow C & \Leftrightarrow C^{A*B} \\
 & \Leftrightarrow F_{curried}::A \rightarrow (B \rightarrow C)
 \end{align*}$$
 
-* Victory!
+** Victory!
 
 #+REVEAL_HTML: <br/><br/><div id="achv"><div class="achievement-banner"><div class="achievement-icon"><span class="icon"><span class="icon-trophy">&#127942;</span></span></div><div class="achievement-text"><p class="achievement-notification">ACHIEVEMENT UNLOCKED</p><p class="achievement-name">Algebraic Datatypes 101</p></div></div></div>
 
-* Equivalences
+** Equivalences
 #+BEGIN_SRC cpp
 template <typename T>
 struct Foo {
@@ -476,7 +482,7 @@ T + T = 2T.
 But note that in ~Bar~, we need to manually keep the two variables "in sync".
 #+END_NOTES
 
-* Algebraic Datatypes
+** Algebraic Datatypes
 This is what it means to have an algebra of datatypes.
 
 #+ATTR_REVEAL: :frag (appear)
@@ -489,61 +495,7 @@ This is what it means to have an algebra of datatypes.
    them
  - to eliminate illegal states by making them inexpressible
 
-* Aside
-
-A taste of algebra with datatypes
-
-* A Taste of Algebra with Datatypes
-How many values?
-#+BEGIN_SRC cpp
-template <typename T>
-class vector<T>;
-#+END_SRC
-
-#+ATTR_REVEAL: :frag appear
-We can define a ~vector<T>~ recursively:
-
-#+ATTR_REVEAL: :frag appear
-${v(t)} = {1 + t v(t)}$
-
-#+ATTR_REVEAL: :frag appear
-(empty vector or (+) head element and (*) tail vector)
-
-* A Taste of Algebra with Datatypes
-And rearrange...
-
-${v(t)} = {1 + t v(t)}$
-#+ATTR_REVEAL: :frag appear
-${v(t) - t v(t)} = {1}$
-#+ATTR_REVEAL: :frag appear
-${v(t) (1-t)} = {1}$
-#+ATTR_REVEAL: :frag appear
-${v(t)} = {{1} \over {1-t}}$
-
-#+ATTR_REVEAL: :frag appear
-What does that mean? Subtracting and dividing types?
-
-* A Taste of Algebra with Datatypes
-When we don't know how to interpret something mathematical?
-
-${v(t)} = {{1} \over {1-t}}$
-
-#+REVEAL_HTML: <p class="fragment appear">Let's <a href="http://www.wolframalpha.com/input/?i=1/(1-t)" data-preview-link>ask Wolfram Alpha</a>.</p>
-
-* A Taste of Algebra with Datatypes
-Series expansion at ${t = 0}$:
-
-${1 + t + t^2 + t^3 + t^4 +{ }...}$
-
-#+ATTR_REVEAL: :frag appear
-A ~vector<T>~ can have:
-#+ATTR_REVEAL: :frag (appear)
- - 0 elements (${1}$)
- - or (+) 1 element (${t}$)
- - or (+) 2 elements (${t^2}$)
- - etc.
-
-* Making Illegal States Unrepresentable
+** Making Illegal States Unrepresentable
 ~std::variant~ is a game changer because it allows us to (more) properly express
 types, so that (more) illegal states are unrepresentable.
 
@@ -554,11 +506,11 @@ C++'s type system is still not perfect by a long shot. But ~std::variant~ is an
 amazing upgrade.
 #+END_NOTES
 
-* Making Illegal States Unrepresentable
+** Making Illegal States Unrepresentable
 Let's look at some possible alternative data formulations, using sum types
 (~variant~, ~optional~) as well as product types (structs).
 
-* Example: Connection State
+** Example: Connection State
 #+BEGIN_SRC cpp
 enum class ConnectionState {
   DISCONNECTED,
@@ -595,7 +547,7 @@ timestamp is perhaps likely to get reused to mean the instant of connection and
 the instant of disconnection.
 #+END_NOTES
 
-* Example: Connection State
+** Example: Connection State
 #+BEGIN_SRC cpp
 struct Connection {
   std::string m_serverAddress;
@@ -631,7 +583,7 @@ A switch statement could still exist, switching on the ~variant~'s ~index()~, or
 a visitor-based approach could be used.
 #+END_NOTES
 
-* Example: Nullable field
+** Example: Nullable field
 #+REVEAL_HTML: <br/>
 #+BEGIN_SRC cpp
 class Friend {
@@ -650,7 +602,7 @@ All the code that deals with this field has to ensure that both variables are
 kept up to date in sync with each other.
 #+END_NOTES
 
-* Example: Nullable field
+** Example: Nullable field
 #+REVEAL_HTML: <br/>
 #+BEGIN_SRC cpp
 class Friend {
@@ -665,7 +617,7 @@ class Friend {
 possible for two fields to get out of step now.
 #+END_NOTES
 
-* Example: Monster AI
+** Example: Monster AI
 #+REVEAL_HTML: <br/>
 #+BEGIN_SRC cpp
 enum class AggroState {
@@ -687,7 +639,7 @@ class MonsterAI {
 Once again, presumably PlayerId has some invalid sentinel value.
 #+END_NOTES
 
-* Example: Monster AI
+** Example: Monster AI
 #+REVEAL_HTML: <br/>
 #+BEGIN_SRC cpp
 class MonsterAI {
@@ -712,7 +664,7 @@ Now the variables are properly placed into the states that use them.
 Chasing and Fighting states could inherit from an Aggroed state that holds a target.
 #+END_NOTES
 
-* Example: Design Patterns
+** Example: Design Patterns
 The addition of sum types to C++ offers an alternative formulation for some
 design patterns.
 
@@ -727,7 +679,7 @@ Sum types + visitor/pattern matching is a third possibility, particularly
 natural for things like ASTs.
 #+END_NOTES
 
-* Example: Design Patterns
+** Example: Design Patterns
  - Command
  - Composite
  - State
@@ -747,7 +699,7 @@ Interpreter tackles the expression problem: easy to add new classes (use
 OO/interfaces) or new operations (use sum types/visitors)?
 #+END_NOTES
 
-* Sum types vs Runtime Polymorphism
+** Sum types vs Runtime Polymorphism                              :noexport:
 Runtime polymorphism (i.e. regular OO interface/implementation) allows manipulation of
 heterogeneous state with a uniform interface.
 
@@ -757,7 +709,7 @@ Sum types allow manipulation of heterogenous state /and/ interface in a homogene
 This slide paraphrased from Andrei Alexandrescu's Dr Dobbs article, April 2002 (!)
 #+END_NOTES
 
-* Designing with Types
+** Designing with Types
 #+REVEAL_HTML: <br/>
 ~std::variant~ and ~std::optional~ are valuable tools that allow us to model the
 state of our business logic more accurately.
@@ -770,7 +722,7 @@ You don't have to test the edge cases where the representation can fall outside
 your reality - because that can't happen.
 #+END_NOTES
 
-* Designing with Types
+** Designing with Types
 #+REVEAL_HTML: <br/>
 Fitting types to their function more accurately makes code easier to understand
 and removes pitfalls.
@@ -789,7 +741,7 @@ Questionably reusing fields, bending semantics, etc. These are bad practices.
 But they happen when we're chasing a deadline.
 #+END_NOTES
 
-* Using Types to Constrain Behaviour
+** Using Types to Constrain Behaviour
 #+REVEAL_HTML: <br/>
 We've seen how an expressive type system (with product and sum types) allows us
 to model state more accurately.
@@ -797,7 +749,7 @@ to model state more accurately.
 "Phantom types" is one technique that helps us to model the /behaviour/ of our
 business logic in the type system. Illegal behaviour becomes a type error.
 
-* Phantom Types: Before
+** Phantom Types: Before
 #+REVEAL_HTML: <br/>
 #+BEGIN_SRC cpp
 std::string GetFormData();
@@ -816,7 +768,7 @@ The type system is not helping us here. How can we use types to make sure that
 we stay safe?
 #+END_NOTES
 
-* Phantom Types: The setup
+** Phantom Types: The setup
 #+REVEAL_HTML: <br/>
 #+BEGIN_SRC cpp
 template <typename T>
@@ -835,7 +787,7 @@ Note that the template argument is unused. It exists _only_ for compile time
 type checking. There is no runtime overhead.
 #+END_NOTES
 
-* Phantom Types: After
+** Phantom Types: After
 #+REVEAL_HTML: <br/>
 #+BEGIN_SRC cpp
 FormData<unsanitized> GetFormData();
@@ -859,7 +811,7 @@ does for integral types. This technique can also be used e.g. in a units
 library.
 #+END_NOTES
 
-* Total Functions
+** Total Functions
 #+REVEAL_HTML: <br/>
 A /total function/ is a function that is defined for all inputs in its domain.
 
@@ -879,7 +831,7 @@ there is a clear mismatch between the type of the function and the actual type
 of its domain.
 #+END_NOTES
 
-* Let's play another game
+** Let's play another game
 #+ATTR_REVEAL: :frag appear
 To help us see how total functions with the right types can result in
 unsurprising code.
@@ -894,13 +846,15 @@ You tell me what it's called... (and you'll even know how to implement it).
 The only rule... it must be a /total/ function.
 
 #+BEGIN_NOTES
-Assume regular types. But you needn't assume anything else.
+Assume regular types. Assume that the function is doing something "interesting"
+rather than "boring" when you have a choice. (ie. that it uses its argument).
+But you needn't assume anything else.
 
 And there are always ways to make things unexpected in C++. But assume nothing
 surprising here.
 #+END_NOTES
 
-* Name That Function
+** Name That Function
 #+REVEAL_HTML: <br/>
 #+BEGIN_SRC cpp
 template <typename T>
@@ -920,7 +874,7 @@ Note the odd situation here: we know more about ~f(T)~ than we do about
 ~f(int)~.
 #+END_NOTES
 
-* Name That Function
+** Name That Function
 #+REVEAL_HTML: <br/>
 #+BEGIN_SRC cpp
 template <typename T, typename U>
@@ -930,7 +884,7 @@ T f(pair<T, U>);
 #+ATTR_REVEAL: :frag appear
 ~first~
 
-* Name That Function
+** Name That Function
 #+REVEAL_HTML: <br/>
 #+BEGIN_SRC cpp
 template <typename T>
@@ -940,7 +894,7 @@ T f(bool, T, T);
 #+ATTR_REVEAL: :frag appear
 ~select~
 
-* Name That Function
+** Name That Function
 #+REVEAL_HTML: <br/>
 #+BEGIN_SRC cpp
 template <typename T, typename U>
@@ -950,7 +904,7 @@ U f(function<U(T)>, T);
 #+ATTR_REVEAL: :frag appear
 ~apply~ or ~call~
 
-* Name That Function
+** Name That Function
 #+REVEAL_HTML: <br/>
 #+BEGIN_SRC cpp
 template <typename T>
@@ -965,7 +919,7 @@ For simplicity, I haven't written this signature in terms of iterators, but it
 would be just the same.
 #+END_NOTES
 
-* Name That Function
+** Name That Function
 #+REVEAL_HTML: <br/>
 #+BEGIN_SRC cpp
 template <typename T>
@@ -980,14 +934,14 @@ Not possible! It's a partial function - the ~vector~ might be empty.
 T& vector<T>::front();
 #+END_SRC
 
-* Name That Function
+** Name That Function
 #+REVEAL_HTML: <br/>
 #+BEGIN_SRC cpp
 template <typename T>
 optional<T> f(vector<T>);
 #+END_SRC
 
-* Name That Function
+** Name That Function
 #+REVEAL_HTML: <br/>
 #+BEGIN_SRC cpp
 template <typename T, typename U>
@@ -997,7 +951,7 @@ vector<U> f(function<U(T)>, vector<T>);
 #+ATTR_REVEAL: :frag appear
 ~transform~
 
-* Name That Function
+** Name That Function
 #+REVEAL_HTML: <br/>
 #+BEGIN_SRC cpp
 template <typename T>
@@ -1007,7 +961,7 @@ vector<T> f(function<bool(T)>, vector<T>);
 #+ATTR_REVEAL: :frag appear
 ~remove_if~, ~partition~, ...
 
-* Name That Function
+** Name That Function
 #+REVEAL_HTML: <br/>
 #+BEGIN_SRC cpp
 template <typename T>
@@ -1017,7 +971,7 @@ T f(optional<T>);
 #+ATTR_REVEAL: :frag appear
 Not possible!
 
-* Name That Function
+** Name That Function
 #+REVEAL_HTML: <br/>
 #+BEGIN_SRC cpp
 template <typename K, typename V>
@@ -1032,7 +986,7 @@ Not possible! (The key might not be in the ~map~.)
 V& map<K, V>::operator[](const K&);
 #+END_SRC
 
-* Name That Function
+** Name That Function
 #+REVEAL_HTML: <br/>
 #+BEGIN_SRC cpp
 template <typename K, typename V>
@@ -1042,7 +996,7 @@ optional<V> f(map<K, V>, K);
 #+ATTR_REVEAL: :frag appear
 ~lookup~
 
-* What Just Happened?
+** What Just Happened?
 I gave you /almost nothing/.
 
 No variable names. No function names. No type names.
@@ -1062,7 +1016,7 @@ much easier. And if your types model the logic properly, perhaps you have
 "self-documenting code"?
 #+END_NOTES
 
-* Well-typed Functions
+** Well-typed Functions
 #+REVEAL_HTML: <br/>
 Writing /total functions/ with well-typed signatures can tell us a lot about
 functionality.
@@ -1072,7 +1026,7 @@ to misuse.
 
 Total functions make more test categories vanish.
 
-* About Testing...
+** About Testing...
 In a previous talk, I talked about unit testing and in particular property-based testing.
 
 #+ATTR_REVEAL: :frag appear
@@ -1097,16 +1051,14 @@ Any time you're thinking something is true for all values, that's what a type
 can do.
 #+END_NOTES
 
-* Further Down the Rabbit Hole
+** Further Down the Rabbit Hole
 #+REVEAL_HTML: <br/>
- - [[http://en.wikipedia.org/wiki/Algebraic_data_type][Algebraic data type]] (Wikipedia)
- - [[http://chris-taylor.github.io/blog/2013/02/10/the-algebra-of-algebraic-data-types/][The Algebra of Algebraic Data Types]] (blog)
- - [[http://https://www.youtube.com/watch?v=YScIPA8RbVE][The Algebra of Algebraic Data Types]] (video)
- * [[http://strictlypositive.org/calculus/][Differential Calculus with Datatypes]] (blog)
- - [[https://vimeo.com/14313378][Effective ML]] (Making Illegal States Unrepresentable)
- - [[http://www.infoq.com/presentations/Types-Tests][Types vs Tests]] (Strange Loop 2012)
+ - http://en.wikipedia.org/wiki/Algebraic_data_type
+ - http://chris-taylor.github.io/blog/2013/02/10/the-algebra-of-algebraic-data-types/
+ - https://vimeo.com/14313378 (Effective ML: Making Illegal States Unrepresentable)
+ - http://www.infoq.com/presentations/Types-Tests (Types vs Tests: Strange Loop 2012)
 
-* Thanks For Listening
+** Thanks For Listening
 #+REVEAL_HTML: <br/>
 "On the whole, I'm inclined to say that when in doubt, make a new type."
 #+REVEAL_HTML: <div align="right">
@@ -1117,7 +1069,7 @@ can do.
  -- Leo Brodie, /[[http://thinking-forth.sourceforge.net/][Thinking Forth]]/
 #+REVEAL_HTML: </div>
 
-* Goals for Well-typed Code
+** Goals for Well-typed Code
  - Make illegal states unrepresentable
  - Use ~std::variant~ and ~std::optional~ for formulations that
    - are more natural
@@ -1128,3 +1080,67 @@ can do.
    - Unsurprising behaviour
    - Easy to use, hard to misuse
 
+** Epilogue
+
+A taste of algebra with datatypes
+
+** A Taste of Algebra with Datatypes
+How many values?
+#+BEGIN_SRC cpp
+template <typename T>
+class vector<T>;
+#+END_SRC
+
+#+ATTR_REVEAL: :frag appear
+We can define a ~vector<T>~ recursively:
+
+#+ATTR_REVEAL: :frag appear
+${v(t)} = {1 + t v(t)}$
+
+#+ATTR_REVEAL: :frag appear
+(empty vector or (+) head element and (*) tail vector)
+
+** A Taste of Algebra with Datatypes
+And rearrange...
+
+${v(t)} = {1 + t v(t)}$
+#+ATTR_REVEAL: :frag appear
+${v(t) - t v(t)} = {1}$
+#+ATTR_REVEAL: :frag appear
+${v(t) (1-t)} = {1}$
+#+ATTR_REVEAL: :frag appear
+${v(t)} = {{1} \over {1-t}}$
+
+#+ATTR_REVEAL: :frag appear
+What does that mean? Subtracting and dividing types?
+
+** A Taste of Algebra with Datatypes
+When we don't know how to interpret something mathematical?
+
+${v(t)} = {{1} \over {1-t}}$
+
+#+REVEAL_HTML: <p class="fragment appear">Let's <a href="http://www.wolframalpha.com/input/?i=1/(1-t)" data-preview-link>ask Wolfram Alpha</a>.</p>
+
+** A Taste of Algebra with Datatypes
+Series expansion at ${t = 0}$:
+
+${1 + t + t^2 + t^3 + t^4 +{ }...}$
+
+#+ATTR_REVEAL: :frag appear
+A ~vector<T>~ can have:
+#+ATTR_REVEAL: :frag (appear)
+ - 0 elements (${1}$)
+ - or (+) 1 element (${t}$)
+ - or (+) 2 elements (${t^2}$)
+ - etc.
+
+** Goals for Well-typed Code
+ - Make illegal states unrepresentable
+ - Use ~std::variant~ and ~std::optional~ for formulations that
+   - are more natural
+   - fit the business logic state better
+ - Use phantom types for safety
+   - Make illegal behaviour a compile error
+ - Write total functions
+   - Unsurprising behaviour
+   - Easy to use, hard to misuse

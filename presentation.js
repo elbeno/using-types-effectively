@@ -7,7 +7,7 @@
                 achvParent = achv.parentNode,
                 newachv = {};
             // event.previousSlide, event.currentSlide, event.indexh, event.indexv
-            if (event.indexh === 38) {
+            if (event.indexv === 37) {
                 newachv = achv.cloneNode(true);
                 achvParent.removeChild(achv);
                 setTimeout(function() {

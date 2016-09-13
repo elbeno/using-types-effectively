@@ -9,6 +9,9 @@
     font-family: Inconsolata;
 }
 
+.reveal a {
+    text-transform: initial;
+}
 .reveal pre {
     font-family: Inconsolata;
     font-size: 30px;
