@@ -150,8 +150,17 @@ to know about types in order to output the correct instructions.
 
 ** What is a type?
 [[./int_bool_1.png]]
-#+ATTR_REVEAL: :frag appear
+
+"Only Lua would have '~1 == true~' evaluate to ~false~. #wantmydayback"
+
+#+REVEAL_HTML: <div class="fragment appear">
 [[./int_bool_2.png]]
+
+"But, how can ~1~ be equal to ~true~? ~1~ is an integer, and ~true~ is a boolean. Lua
+seems to be correct here. It's your view of the world that has been warped."
+
+(Smiley faces make criticism OK!)
+#+REVEAL_HTML: </div>
 
 ** What is a type?
 #+REVEAL_HTML: <br/>
@@ -232,7 +241,7 @@ struct Foo {};
 ** Level 1
 How many values?
 #+BEGIN_SRC cpp
-enum FireSwampDangers {
+enum FireSwampDangers : int8_t {
   FLAME_SPURTS,
   LIGHTNING_SAND,
   ROUSES
